@@ -3,6 +3,7 @@ package users
 import (
 	"fmt"
 
+	"github.com/jgmc3012/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/jgmc3012/bookstore_users-api/utils/date_utils"
 	"github.com/jgmc3012/bookstore_users-api/utils/errors"
 )
@@ -12,6 +13,9 @@ var (
 )
 
 func Get(userId int64) (*User, *errors.RestErr) {
+	if err := users_db.Client.Ping(); err != nil {
+		panic(err)
+	}
 	user := usersDB[userId]
 	if user == nil {
 		return user, errors.NewNotFoundError(fmt.Sprintf("User %d not found", userId))
