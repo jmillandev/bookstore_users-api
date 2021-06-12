@@ -4,8 +4,11 @@ import (
 	"fmt"
 
 	"github.com/jgmc3012/bookstore_users-api/datasources/mysql/users_db"
-	"github.com/jgmc3012/bookstore_users-api/utils/date_utils"
 	"github.com/jgmc3012/bookstore_users-api/utils/errors"
+)
+
+const (
+	queryInsertUser = "INSERT INTO users(first_name, last_name, email, date_created) VALUES(?, ?, ?, ?);"
 )
 
 var (
@@ -24,16 +27,28 @@ func Get(userId int64) (*User, *errors.RestErr) {
 }
 
 func (user *User) Save() *errors.RestErr {
-	current_user := usersDB[user.Id]
-	if current_user != nil {
-		if current_user.Email == user.Email {
-			return errors.NewBadRequestError(fmt.Sprintf("email %s already registered", user.Email))
-		}
-		return errors.NewBadRequestError(fmt.Sprintf("user %d already exists", user.Id))
+	stmt, err := users_db.Client.Prepare(queryInsertUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+
+	insertResult, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
+	if err != nil {
+		return errors.NewInternalServerError(
+			fmt.Sprintf("error when trying to save user: %s", err.Error()),
+		)
 	}
 
-	user.DateCreated = date_utils.GetNowString()
+	// insertResult, err := users_db.Client.Exec(queryInsertUser, user.FirstName, user.LastName, user.Email, user.DateCreated) // lost performance
 
-	usersDB[user.Id] = user
+	userId, err := insertResult.LastInsertId()
+	if err != nil {
+		return errors.NewInternalServerError(
+			fmt.Sprintf("error when trying to save user: %s", err.Error()),
+		)
+	}
+
+	user.Id = userId
 	return nil
 }
