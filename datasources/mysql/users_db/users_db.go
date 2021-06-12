@@ -29,7 +29,7 @@ func init() {
 	log.Println(fmt.Sprintf("about to connect to %s", dataSourceName))
 
 	var err error
-	Client, err := sql.Open("mysql", dataSourceName)
+	Client, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		panic(err)
 	}
