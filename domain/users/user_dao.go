@@ -11,21 +11,35 @@ import (
 
 const (
 	ixdexUniqueEmail = "email_UNIQUE"
+	errorNoRows      = "no rows in result set"
 	queryInsertUser  = "INSERT INTO users(first_name, last_name, email, date_created) VALUES(?, ?, ?, ?);"
-)
-
-var (
-	usersDB = make(map[int64]*User)
+	queryGetUser     = "SELECT id, first_name, last_name, email, date_created FROM users WHERE id=?"
 )
 
 func Get(userId int64) (*User, *errors.RestErr) {
-	if err := users_db.Client.Ping(); err != nil {
-		panic(err)
+	stmt, err := users_db.Client.Prepare(queryGetUser)
+	if err != nil {
+		return nil, errors.NewInternalServerError(err.Error())
 	}
-	user := usersDB[userId]
-	if user == nil {
-		return user, errors.NewNotFoundError(fmt.Sprintf("User %d not found", userId))
+	defer stmt.Close()
+
+	result := stmt.QueryRow(userId)
+
+	// results, err := stmt.Query(userId)
+
+	user := &User{}
+
+	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); err != nil {
+		if strings.Contains(err.Error(), errorNoRows) {
+			return nil, errors.NewNotFoundError(
+				fmt.Sprintf("user(id: %d) not found", userId),
+			)
+		}
+		return nil, errors.NewInternalServerError(
+			fmt.Sprintf("error when trying to get user(id: %d): %s", userId, err.Error()),
+		)
 	}
+
 	return user, nil
 }
 
