@@ -43,12 +43,44 @@ func GetUser(c *gin.Context) {
 		c.JSON(err.Status, err)
 		return
 	}
-	user, getErr := services.GetUser(userId)
+
+	var user users.User
+	user.Id = userId
+
+	result, getErr := services.GetUser(user)
+
 	if getErr != nil {
 		c.JSON(getErr.Status, getErr)
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, result)
+}
+
+func UpdateUser(c *gin.Context) {
+	userId, userErr := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if userErr != nil {
+		err := errors.NewBadRequestError("user id should be a number")
+		c.JSON(err.Status, err)
+		return
+	}
+
+	var user users.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		log.Println(err)
+		restErr := errors.NewBadRequestError("Invalid json body")
+		c.JSON(restErr.Status, restErr)
+		return
+	}
+
+	user.Id = userId
+
+	result, updateErr := services.UpdateUser(user)
+	if updateErr != nil {
+		c.JSON(updateErr.Status, updateErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }
 
 func SearchUser(c *gin.Context) {

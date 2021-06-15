@@ -10,26 +10,25 @@ import (
 const (
 	queryInsertUser = "INSERT INTO users(first_name, last_name, email, date_created) VALUES(?, ?, ?, ?);"
 	queryGetUser    = "SELECT id, first_name, last_name, email, date_created FROM users WHERE id=?"
+	queryUpdateUser = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
 )
 
-func Get(userId int64) (*User, *errors.RestErr) {
+func (user *User) Get() *errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryGetUser)
 	if err != nil {
-		return nil, errors.NewInternalServerError(err.Error())
+		return errors.NewInternalServerError(err.Error())
 	}
 	defer stmt.Close()
 
-	result := stmt.QueryRow(userId)
+	result := stmt.QueryRow(user.Id)
 
 	// results, err := stmt.Query(userId)
 
-	user := &User{}
-
 	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); err != nil {
-		return nil, mysql_utils.ParseError(err)
+		return mysql_utils.ParseError(err)
 	}
 
-	return user, nil
+	return nil
 }
 
 func (user *User) Save() *errors.RestErr {
@@ -55,4 +54,20 @@ func (user *User) Save() *errors.RestErr {
 
 	user.Id = userId
 	return nil
+}
+
+func (user *User) Update() *errors.RestErr {
+
+	stmt, err := users_db.Client.Prepare(queryUpdateUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.FirstName, user.LastName, user.Email, user.Id)
+	if err != nil {
+		return mysql_utils.ParseError(err)
+	}
+	return nil
+
 }
