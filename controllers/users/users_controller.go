@@ -108,5 +108,12 @@ func Delete(c *gin.Context) {
 }
 
 func Search(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "implement me!")
+	status := c.Query("status")
+
+	results, err := services.FindByStatus(status)
+	if err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+	c.JSON(http.StatusOK, results)
 }
