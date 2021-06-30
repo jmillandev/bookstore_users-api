@@ -2,6 +2,8 @@ package services
 
 import (
 	"github.com/jgmc3012/bookstore_users-api/domain/users"
+	"github.com/jgmc3012/bookstore_users-api/utils/cripto_utils"
+	"github.com/jgmc3012/bookstore_users-api/utils/date_utils"
 	"github.com/jgmc3012/bookstore_users-api/utils/errors"
 )
 
@@ -19,6 +21,9 @@ func CreateUser(user users.User) (*users.User, *errors.RestErr) {
 		return nil, err
 	}
 
+	user.DateCreated = date_utils.GetNowString()
+	user.Status = users.StatusActive
+	user.Password = cripto_utils.GetMd5(user.Password)
 	if err := user.Save(); err != nil {
 		return nil, err
 	}
