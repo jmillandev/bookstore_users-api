@@ -22,7 +22,7 @@ func ParseError(err error) *errors.RestErr {
 
 	switch slqErr.Number {
 	case 1062:
-		return errors.NewBadRequestError("invalid data")
+		return errors.NewBadRequestError("invalid data, duplicate field")
 	}
 
 	return errors.NewInternalServerError("error processing request")

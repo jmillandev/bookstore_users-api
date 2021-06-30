@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, date_created) VALUES(?, ?, ?, ?);"
-	queryGetUser          = "SELECT id, first_name, last_name, email, date_created FROM users WHERE id=?"
+	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, status, password, date_created) VALUES(?, ?, ?, ?, ?, ?);"
+	queryGetUser          = "SELECT id, first_name, last_name, email, status, date_created FROM users WHERE id=?"
 	queryUpdateUser       = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
 	queryDeleteUser       = "DELETE FROM users WHERE id=?"
 	queryFindUserByStatus = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?"
@@ -26,7 +26,7 @@ func (user *User) Get() *errors.RestErr {
 
 	// results, err := stmt.Query(userId)
 
-	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); err != nil {
+	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Status, &user.DateCreated); err != nil {
 		return mysql_utils.ParseError(err)
 	}
 
@@ -41,8 +41,8 @@ func (user *User) Save() *errors.RestErr {
 	defer stmt.Close()
 
 	user.DateCreated = date_utils.GetNowString()
-
-	insertResult, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
+	user.Status = "active"
+	insertResult, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.Status, user.Password, user.DateCreated)
 	if err != nil {
 		return mysql_utils.ParseError(err)
 	}

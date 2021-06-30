@@ -13,7 +13,7 @@ type User struct {
 	Email       string `json:"email"`
 	DateCreated string `json:"date_created"`
 	Status      string `json:"status"`
-	Password    string `json:"-"`
+	Password    string `json:"password"`
 }
 
 func (user *User) Validate() *errors.RestErr {
@@ -24,5 +24,11 @@ func (user *User) Validate() *errors.RestErr {
 	if user.Email == "" {
 		return errors.NewBadRequestError("Invalid email addres")
 	}
+
+	user.Password = strings.TrimSpace(user.Password)
+	if user.Password == "" {
+		return errors.NewBadRequestError("Invalid email password")
+	}
+
 	return nil
 }
