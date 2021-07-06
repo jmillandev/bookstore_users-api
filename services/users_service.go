@@ -7,7 +7,19 @@ import (
 	"github.com/jgmc3012/bookstore_users-api/utils/errors"
 )
 
-func GetUser(user users.User) (*users.User, *errors.RestErr) {
+type usersService struct{}
+
+type usersServiceInterface interface {
+	GetUser(users.User) (*users.User, *errors.RestErr)
+	CreateUser(users.User) (*users.User, *errors.RestErr)
+	UpdateUser(bool, users.User) (*users.User, *errors.RestErr)
+	DeleteUser(int64) *errors.RestErr
+	FindByStatusUser(string) (users.Users, *errors.RestErr)
+}
+
+var UsersService usersServiceInterface = &usersService{}
+
+func (s *usersService) GetUser(user users.User) (*users.User, *errors.RestErr) {
 	currentUser := &users.User{Id: user.Id}
 
 	if errUser := currentUser.Get(); errUser != nil {
@@ -16,7 +28,7 @@ func GetUser(user users.User) (*users.User, *errors.RestErr) {
 	return currentUser, nil
 }
 
-func CreateUser(user users.User) (*users.User, *errors.RestErr) {
+func (s *usersService) CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
@@ -31,8 +43,8 @@ func CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	return &user, nil
 }
 
-func UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) {
-	currentUser, err := GetUser(user)
+func (s *usersService) UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) {
+	currentUser, err := UsersService.GetUser(user)
 	if err != nil {
 		return nil, err
 	}
@@ -65,12 +77,12 @@ func UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) 
 
 }
 
-func DeleteUser(userId int64) *errors.RestErr {
+func (s *usersService) DeleteUser(userId int64) *errors.RestErr {
 	user := &users.User{Id: userId}
 	return user.Delete()
 }
 
-func FindByStatus(status string) (users.Users, *errors.RestErr) {
-	dao := &users.User{}
-	return dao.FindByStatus(status)
+func (s *usersService) FindByStatusUser(status string) (users.Users, *errors.RestErr) {
+	user := &users.User{}
+	return user.FindByStatus(status)
 }
