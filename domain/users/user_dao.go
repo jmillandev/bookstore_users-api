@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, status, password, date_created) VALUES(?, ?, ?, ?, ?, ?);"
-	queryGetUser          = "SELECT id, first_name, last_name, email, status, date_created FROM users WHERE id=?"
-	queryUpdateUser       = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
-	queryDeleteUser       = "DELETE FROM users WHERE id=?"
-	queryFindUserByStatus = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?"
+	queryInsertUser             = "INSERT INTO users(first_name, last_name, email, status, password, date_created) VALUES(?, ?, ?, ?, ?, ?);"
+	queryGetUser                = "SELECT id, first_name, last_name, email, status, date_created FROM users WHERE id=?"
+	queryUpdateUser             = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
+	queryDeleteUser             = "DELETE FROM users WHERE id=?"
+	queryFindUserByStatus       = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?"
+	queryFindByEmailAndPassword = "SELECT id, first_name, last_name, email, date_created FROM users WHERE email=? AND password=? AND status=?"
 )
 
 func (user *User) Get() *errors.RestErr {
@@ -118,4 +119,22 @@ func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
 		results = append(results, user)
 	}
 	return results, nil
+}
+
+func (user *User) FindByEmailAndPassword() *errors.RestErr {
+	stmt, err := users_db.Client.Prepare(queryFindByEmailAndPassword)
+	if err != nil {
+		logger.Error("error when trying to prepare get user by email and password statement", err)
+		return errors.NewInternalServerError("database error")
+	}
+	defer stmt.Close()
+
+	result := stmt.QueryRow(user.Email, user.Password, StatusActive)
+
+	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Status, &user.DateCreated); err != nil {
+		logger.Error("error when trying to get user by email and password", err)
+		return mysql_utils.ParseError(err)
+	}
+
+	return nil
 }
