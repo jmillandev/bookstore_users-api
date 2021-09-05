@@ -5,6 +5,6 @@ CREATE TABLE users(
     email VARCHAR(50) NOT NULL UNIQUE,
     status VARCHAR(10) NOT NULL,
     password VARCHAR(250) NOT NULL,
-    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_created VARCHAR(45) NOT NULL,
     PRIMARY KEY(id)
 );
