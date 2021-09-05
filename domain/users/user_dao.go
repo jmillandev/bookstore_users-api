@@ -1,6 +1,8 @@
 package users
 
 import (
+	"strings"
+
 	"github.com/jgmc3012/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/jgmc3012/bookstore_users-api/logger"
 	"github.com/jgmc3012/bookstore_users-api/utils/errors"
@@ -132,6 +134,9 @@ func (user *User) FindByEmailAndPassword() *errors.RestErr {
 	result := stmt.QueryRow(user.Email, user.Password, StatusActive)
 
 	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Status, &user.DateCreated); err != nil {
+		if strings.Contains(err.Error(), mysql_utils.ErrorNoRows) {
+			return errors.NewBadRequestError("invalid user credentials.")
+		}
 		logger.Error("error when trying to get user by email and password", err)
 		return mysql_utils.ParseError(err)
 	}
