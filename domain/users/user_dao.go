@@ -13,7 +13,7 @@ const (
 	queryUpdateUser             = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
 	queryDeleteUser             = "DELETE FROM users WHERE id=?"
 	queryFindUserByStatus       = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?"
-	queryFindByEmailAndPassword = "SELECT id, first_name, last_name, email, date_created FROM users WHERE email=? AND password=? AND status=?"
+	queryFindByEmailAndPassword = "SELECT id, first_name, last_name, email, status, date_created FROM users WHERE email=? AND password=? AND status=?"
 )
 
 func (user *User) Get() *errors.RestErr {
