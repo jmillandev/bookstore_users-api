@@ -50,6 +50,13 @@ func Get(c *gin.Context) {
 		c.JSON(err.Status, err)
 		return
 	}
+
+	if callerId := oauth.GetCallerId(c.Request); callerId == 0 {
+		err := errors.NewUnauthorizedError()
+		c.JSON(err.Status, err)
+		return
+	}
+
 	userId, idErr := getUserId(c.Param("user_id"))
 	if idErr != nil {
 		c.JSON(idErr.Status, idErr)
