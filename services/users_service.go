@@ -2,8 +2,8 @@ package services
 
 import (
 	"github.com/jmillandev/bookstore_users-api/domain/users"
-	"github.com/jmillandev/bookstore_users-api/utils/cripto_utils"
 	"github.com/jmillandev/bookstore_users-api/utils/date_utils"
+	"github.com/jmillandev/bookstore_utils-go/cripto_utils"
 	"github.com/jmillandev/bookstore_utils-go/rest_errors"
 )
 
