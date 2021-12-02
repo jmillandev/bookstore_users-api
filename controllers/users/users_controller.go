@@ -6,16 +6,16 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jgmc3012/bookstore_oauth-go/oauth"
-	"github.com/jgmc3012/bookstore_users-api/domain/users"
-	"github.com/jgmc3012/bookstore_users-api/services"
-	"github.com/jgmc3012/bookstore_users-api/utils/errors"
+	"github.com/jmillandev/bookstore_oauth-go/oauth"
+	"github.com/jmillandev/bookstore_users-api/domain/users"
+	"github.com/jmillandev/bookstore_users-api/services"
+	"github.com/jmillandev/bookstore_utils-go/rest_errors"
 )
 
-func getUserId(userIdParam string) (int64, *errors.RestErr) {
+func getUserId(userIdParam string) (int64, *rest_errors.RestErr) {
 	userId, userErr := strconv.ParseInt(userIdParam, 10, 64)
 	if userErr != nil {
-		return 0, errors.NewBadRequestError("user id should be a number")
+		return 0, rest_errors.NewBadRequestError("user id should be a number")
 	}
 	return userId, nil
 }
@@ -33,7 +33,7 @@ func Create(c *gin.Context) {
 	// }
 	if err := c.ShouldBindJSON(&user); err != nil {
 		log.Println(err)
-		restErr := errors.NewBadRequestError("Invalid json body")
+		restErr := rest_errors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -52,7 +52,7 @@ func Get(c *gin.Context) {
 	}
 
 	if callerId := oauth.GetCallerId(c.Request); callerId == 0 {
-		err := errors.NewUnauthorizedError()
+		err := rest_errors.NewUnauthorizedError()
 		c.JSON(err.Status, err)
 		return
 	}
@@ -91,7 +91,7 @@ func Update(c *gin.Context) {
 	var user users.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		log.Println(err)
-		restErr := errors.NewBadRequestError("Invalid json body")
+		restErr := rest_errors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.Status, restErr)
 		return
 	}
@@ -140,7 +140,7 @@ func Search(c *gin.Context) {
 func Login(c *gin.Context) {
 	var request users.LoginRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		restErr := errors.NewBadRequestError("Invalid json body")
+		restErr := rest_errors.NewBadRequestError("Invalid json body")
 		c.JSON(restErr.Status, restErr)
 		return
 	}

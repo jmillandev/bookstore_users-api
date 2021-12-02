@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/jgmc3012/bookstore_users-api/controllers/ping"
-	"github.com/jgmc3012/bookstore_users-api/controllers/users"
+	"github.com/jmillandev/bookstore_users-api/controllers/ping"
+	"github.com/jmillandev/bookstore_users-api/controllers/users"
 )
 
 func mapUrls() {
