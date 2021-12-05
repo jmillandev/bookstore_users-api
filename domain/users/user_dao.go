@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/jmillandev/bookstore_users-api/datasources/mysql/users_db"
-	"github.com/jmillandev/bookstore_users-api/logger"
 	"github.com/jmillandev/bookstore_users-api/utils/mysql_utils"
+	"github.com/jmillandev/bookstore_utils-go/logger"
 	"github.com/jmillandev/bookstore_utils-go/rest_errors"
 )
 
