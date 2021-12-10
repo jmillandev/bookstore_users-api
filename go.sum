@@ -34,6 +34,8 @@ github.com/jmillandev/bookstore_utils-go v0.0.0-20211202040453-d3363839892e h1:H
 github.com/jmillandev/bookstore_utils-go v0.0.0-20211202040453-d3363839892e/go.mod h1:ATeRAL43a5ze4yn5ik/x4UuO1CPLoVENbB+8iB8VjeE=
 github.com/jmillandev/bookstore_utils-go v0.0.0-20211205042447-83ba443c93fc h1:giPuWGucCyISojvgSV3+UfTfwX0YBqEbdifP//SvidM=
 github.com/jmillandev/bookstore_utils-go v0.0.0-20211205042447-83ba443c93fc/go.mod h1:ATeRAL43a5ze4yn5ik/x4UuO1CPLoVENbB+8iB8VjeE=
+github.com/jmillandev/bookstore_utils-go v0.0.0-20211210144620-a6f3eb3cf39a h1:bW8SUOkeZIypRNsBZQTLbDtU56Dr0pF0s1FDOlem1K0=
+github.com/jmillandev/bookstore_utils-go v0.0.0-20211210144620-a6f3eb3cf39a/go.mod h1:fwItOW93dfK7MoaQYLlyA5qHmAW5TBuZ5HhyT6b6E5g=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/joho/godotenv v1.4.0 h1:3l4+N6zfMWnkbPEXKng2o2/MR5mSwTrBih4ZEkkz1lg=
 github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
