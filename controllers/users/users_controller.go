@@ -52,7 +52,7 @@ func Get(c *gin.Context) {
 	}
 
 	if callerId := oauth.GetCallerId(c.Request); callerId == 0 {
-		err := rest_errors.NewUnauthorizedError()
+		err := rest_errors.NewUnauthorizedError("invalid access token")
 		c.JSON(err.Status, err)
 		return
 	}
